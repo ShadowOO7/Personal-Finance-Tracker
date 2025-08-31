@@ -36,7 +36,7 @@ Before you begin, ensure you have the following installed:
 
 1.  **Clone the Repository:**
     ```bash
-    git clone <repository_url>
+    git clone <https://github.com/ShadowOO7/Personal-Finance-Tracker>
     cd personal_finance_assistant
     ```
 
