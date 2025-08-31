@@ -51,7 +51,7 @@ Before you begin, ensure you have the following installed:
         ```
     *   Create a `.env` file in the `backend` directory based on `.env.example`.
         ```
-        MONGO_URL="mongodb://localhost:27017/pfa"
+        MONGO_URL="mongodb://localhost:27017/pfa" // this is my mongodb address for reference enter your own credentials there
         PORT=3000
         JWT_SECRET="your_very_secret_jwt_key" # IMPORTANT: Change this to a strong, random string
         ```
