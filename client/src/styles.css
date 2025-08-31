@@ -1,0 +1,31 @@
+body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:#F0F2F5; color:#333333; margin:0; padding:20px;}
+
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: white;
+  font-size: 14px;
+  z-index: 1000;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.notification.success {
+  background-color: #4CAF50;
+}
+
+.notification.error {
+  background-color: #f44336;
+}
+
+.bg-primary-custom {
+  background-color: #0d6efd !important;
+}
+
+.chart-container {
+  position: relative;
+  height: 250px;
+  width: 100%;
+}

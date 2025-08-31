@@ -1,0 +1,13 @@
+# Dependencies
+/node_modules
+/client/node_modules
+/backend/node_modules
+
+# Build output
+/dist
+
+# Uploads
+/backend/uploads
+
+# Environment variables
+.env
