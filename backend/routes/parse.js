@@ -19,10 +19,16 @@ router.post('/', upload.single('file'), async (req, res, next) => {
     // find date (simple regex for YYYY-MM-DD or MM/DD/YYYY)
     const dateRegex = /\b(\d{4}-\d{2}-\d{2}|\d{2}\/\d{2}\/\d{4})\b/;
     const dateMatch = text.match(dateRegex);
-    const extractedDate = dateMatch ? new Date(dateMatch[0]).toISOString().slice(0,10) : null;
+    let extractedDate = null;
+    if (dateMatch && dateMatch[0]) {
+      const dateObj = new Date(dateMatch[0]);
+      if (!isNaN(dateObj.getTime())) { // Check if dateObj is a valid date
+        extractedDate = dateObj.toISOString().slice(0, 10);
+      }
+    }
 
     // find amounts (simple regex for numbers with decimal or comma)
-    const amtRegex = /\b\d{1,3}(?:[\d]{0,})?(?:\.\d{1,2})?\b/g;
+    const amtRegex = /(?:(?:Total|Amount|Balance|Subtotal|Grand Total)\s*[:]?\s*)?(?:[\$€£])?\s*(\d{1,3}(?:[\d]{0,3})*(?:\.\d{2}))/g;
     const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
     const suggestions = [];
     for (const line of lines) {
@@ -40,6 +46,7 @@ router.post('/', upload.single('file'), async (req, res, next) => {
     fs.unlinkSync(req.file.path);
     res.json({ suggestions });
   } catch (err) {
+    console.error("PDF parsing error:", err);
     next(err);
   }
 });
