@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../api';
 import { useNotification } from '../contexts/NotificationContext';
 
-export default function TransactionForm({ onDone, suggestion }){
+export default function TransactionForm({ onDone, suggestion, onAddTransaction }){
   const [type, setType] = useState('expense');
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('General');
@@ -20,17 +20,29 @@ export default function TransactionForm({ onDone, suggestion }){
     }
   }, [suggestion]);
 
-  const submit = async (e) => {
-    e.preventDefault();
+  const addTransaction = async (data) => {
     setLoading(true);
     try {
-      await api.post('/api/transactions', { type, amount: parseFloat(amount), category, description, date });
+      await api.post('/api/transactions', data);
       setAmount(''); setDescription(''); setCategory('General');
       if (onDone) onDone();
       showNotification('Transaction added successfully', 'success');
-    } catch (err){
+      return true;
+    } catch (err) {
       showNotification('Error: ' + (err.response?.data?.error || err.message), 'error');
+      return false;
     } finally { setLoading(false); }
+  };
+
+  useEffect(() => {
+    if (onAddTransaction) {
+      onAddTransaction(addTransaction);
+    }
+  }, [onAddTransaction, addTransaction]);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    await addTransaction({ type, amount: parseFloat(amount), category, description, date });
   }
 
   return (

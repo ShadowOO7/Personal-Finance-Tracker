@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import TransactionForm from '../components/TransactionForm';
 import TransactionList from '../components/TransactionList';
 import Charts from '../components/Charts';
@@ -8,6 +8,28 @@ import { useAuth } from '../contexts/AuthContext';
 function DashboardPage() {
   const [reload, setReload] = useState(0);
   const { user } = useAuth();
+  const [addTransactionFn, setAddTransactionFn] = useState(null);
+
+  const handleSetAddTransactionFn = useCallback((fn) => {
+    setAddTransactionFn(() => fn);
+  }, []);
+
+  const handleSuggestion = useCallback(async (suggestion) => {
+    if (addTransactionFn) {
+      const success = await addTransactionFn({
+        type: 'expense',
+        amount: suggestion.amount,
+        category: suggestion.category || 'Uncategorized',
+        description: suggestion.description,
+        date: suggestion.date || new Date().toISOString().slice(0, 10),
+      });
+      if (success) {
+        setReload(n => n + 1);
+      }
+    } else {
+      console.warn('addTransaction function not available yet.');
+    }
+  }, [addTransactionFn]);
 
   return (
     <div className="container mt-4 py-3 px-3">
@@ -15,7 +37,7 @@ function DashboardPage() {
         <div className="col-lg-6">
           <div className="card shadow-sm mb-4 h-100">
             <div className="card-body">
-              <TransactionForm onDone={() => setReload(n => n + 1)} />
+              <TransactionForm onDone={() => setReload(n => n + 1)} onAddTransaction={handleSetAddTransactionFn} />
             </div>
           </div>
         </div>
@@ -31,7 +53,7 @@ function DashboardPage() {
         <div className="col-lg-6">
           <div className="card shadow-sm mb-4">
             <div className="card-body">
-              <ReceiptUpload onParsed={() => setReload(n => n + 1)} />
+              <ReceiptUpload onParsed={() => setReload(n => n + 1)} onSuggestion={handleSuggestion} />
             </div>
           </div>
         </div>
